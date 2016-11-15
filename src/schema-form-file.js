@@ -73,15 +73,17 @@ angular
 angular
    .module('ngSchemaFormFile', [
       'ngFileUpload',
-      'ngMessages'
+      'ngMessages',
+      'SSATB.LocalForage'
    ])
-   .directive('ngSchemaFile', ['Upload', '$timeout', '$q', function (Upload, $timeout, $q) {
+   .directive('ngSchemaFile', ['Upload', '$timeout', '$q', '$localForage', function (Upload, $timeout, $q, $localForage) {
       return {
          restrict: 'A',
          scope:    true,
          require:  'ngModel',
          link:     function (scope, element, attrs, ngModel) {
-            scope.url = scope.form && scope.form.endpoint;
+             scope.storageDomain = scope.form && scope.form.storageDomain;
+             scope.apiInfo = getApiConfigFromApiInfo($localForage._localforage._config.apiInfo);
             scope.isSinglefileUpload = scope.form && scope.form.schema && scope.form.schema.format === 'singlefile';
 
             scope.selectFile  = function (file) {
@@ -100,14 +102,25 @@ angular
                   doUpload(file);
                });
             };
+            function getApiConfigFromApiInfo(apiInfoObject) {
+                for (var apiInfo in apiInfoObject) {
+                    var serviceName = apiInfoObject[apiInfo].ServiceName;
+                    if (serviceName != null && serviceName.toLowerCase().trim() == "ssatb.fileservice")
+                        return apiInfoObject[apiInfo];
+                }
+                return null;
+            }
 
             function doUpload(file) {
-               if (file && !file.$error && scope.url) {
+                var apiInfo = scope.apiInfo;
+                if (file && !file.$error && apiInfo && scope.storageDomain) {
+                    var url = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/files";
                   file.upload = Upload.upload({
-                     url:  scope.url,
-                     file: file
+                      url: url,
+                      file: file,
+                      headers: apiInfo.Headers
                   });
-
+                
                   file.upload.then(function (response) {
                      $timeout(function () {
                         file.result = response.data;
