@@ -3,7 +3,7 @@
 angular.module("ssatb.services", [])
         .provider("apiInfo", function apiInfoProvider() {
             this.$get = function apiInfoProviderFactory() {
-                return { "fileService": { "Headers": { "Authorization": "Basic c3NhdGI6cGVuY2lsczE0IQ==" }, "Url": "https://localhost:44313", "ServiceName": "SSATB.FileService" } };
+                return { "fileService": { "Headers": { "Authorization": "Basic c3NhdGI6cGVuY2lsczE0IQ==" }, "Url": "https://ssatb-fileservice-dev.azurewebsites.net", "ServiceName": "SSATB.FileService" } };
             };
         })
 ;
