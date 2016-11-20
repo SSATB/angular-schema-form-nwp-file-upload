@@ -8,56 +8,63 @@ angular
              defaultMaxSizeMsg1 = 'This file is too large. Maximum size allowed is ',
              defaultMaxSizeMsg2 = 'Current file size:',
              defaultMinItemsMsg = 'You have to upload at least one file',
-             defaultMaxItemsMsg = 'You can\'t upload more than one file.';
+             defaultMaxItemsMsg = 'You can\'t upload more than one file.',
+            defaultChunkedFileSize = 10000;
 
-         var nwpSinglefileUpload = function (name, schema, options) {
-            if (schema.type === 'array' && schema.format === 'singlefile') {
-               if (schema.pattern && schema.pattern.mimeType && !schema.pattern.validationMessage) {
-                  schema.pattern.validationMessage = defaultPatternMsg;
-               }
-               if (schema.maxSize && schema.maxSize.maximum && !schema.maxSize.validationMessage) {
-                  schema.maxSize.validationMessage  = defaultMaxSizeMsg1;
-                  schema.maxSize.validationMessage2 = defaultMaxSizeMsg2;
-               }
-               if (schema.minItems && schema.minItems.minimum && !schema.minItems.validationMessage) {
-                  schema.minItems.validationMessage = defaultMinItemsMsg;
-               }
-               if (schema.maxItems && schema.maxItems.maximum && !schema.maxItems.validationMessage) {
-                  schema.maxItems.validationMessage = defaultMaxItemsMsg;
-               }
+            var nwpSinglefileUpload = function (name, schema, options) {
+                if (schema.type === 'array' && schema.format === 'singlefile') {
+                    if (schema.pattern && schema.pattern.mimeType && !schema.pattern.validationMessage) {
+                        schema.pattern.validationMessage = defaultPatternMsg;
+                    }
+                    if (schema.maxSize && schema.maxSize.maximum && !schema.maxSize.validationMessage) {
+                        schema.maxSize.validationMessage = defaultMaxSizeMsg1;
+                        schema.maxSize.validationMessage2 = defaultMaxSizeMsg2;
+                    }
+                    if (schema.minItems && schema.minItems.minimum && !schema.minItems.validationMessage) {
+                        schema.minItems.validationMessage = defaultMinItemsMsg;
+                    }
+                    if (schema.maxItems && schema.maxItems.maximum && !schema.maxItems.validationMessage) {
+                        schema.maxItems.validationMessage = defaultMaxItemsMsg;
+                    }
+                    if (angular.isUndefined(schema.chunkedFileSize) || schema.chunkedFileSize == null) {
+                        schema.chunkedFileSize = defaultChunkedFileSize;
+                    }
 
-               var f                                                  = schemaFormProvider.stdFormObj(name, schema, options);
-               f.key                                                  = options.path;
-               f.type                                                 = 'nwpFileUpload';
-               options.lookup[sfPathProvider.stringify(options.path)] = f;
-               return f;
-            }
-         };
+                    var f = schemaFormProvider.stdFormObj(name, schema, options);
+                    f.key = options.path;
+                    f.type = 'nwpFileUpload';
+                    options.lookup[sfPathProvider.stringify(options.path)] = f;
+                    return f;
+                }
+            };
 
          schemaFormProvider.defaults.array.unshift(nwpSinglefileUpload);
 
          var nwpMultifileUpload = function (name, schema, options) {
-            if (schema.type === 'array' && schema.format === 'multifile') {
-               if (schema.pattern && schema.pattern.mimeType && !schema.pattern.validationMessage) {
-                  schema.pattern.validationMessage = defaultPatternMsg;
-               }
-               if (schema.maxSize && schema.maxSize.maximum && !schema.maxSize.validationMessage) {
-                  schema.maxSize.validationMessage  = defaultMaxSizeMsg1;
-                  schema.maxSize.validationMessage2 = defaultMaxSizeMsg2;
-               }
-               if (schema.minItems && schema.minItems.minimum && !schema.minItems.validationMessage) {
-                  schema.minItems.validationMessage = defaultMinItemsMsg;
-               }
-               if (schema.maxItems && schema.maxItems.maximum && !schema.maxItems.validationMessage) {
-                  schema.maxItems.validationMessage = defaultMaxItemsMsg;
-               }
+             if (schema.type === 'array' && schema.format === 'multifile') {
+                 if (schema.pattern && schema.pattern.mimeType && !schema.pattern.validationMessage) {
+                     schema.pattern.validationMessage = defaultPatternMsg;
+                 }
+                 if (schema.maxSize && schema.maxSize.maximum && !schema.maxSize.validationMessage) {
+                     schema.maxSize.validationMessage = defaultMaxSizeMsg1;
+                     schema.maxSize.validationMessage2 = defaultMaxSizeMsg2;
+                 }
+                 if (schema.minItems && schema.minItems.minimum && !schema.minItems.validationMessage) {
+                     schema.minItems.validationMessage = defaultMinItemsMsg;
+                 }
+                 if (schema.maxItems && schema.maxItems.maximum && !schema.maxItems.validationMessage) {
+                     schema.maxItems.validationMessage = defaultMaxItemsMsg;
+                 }
+                 if (angular.isUndefined(schema.chunkedFileSize) || schema.chunkedFileSize == null) {
+                     schema.chunkedFileSize = defaultChunkedFileSize;
+                 }
 
-               var f                                                  = schemaFormProvider.stdFormObj(name, schema, options);
-               f.key                                                  = options.path;
-               f.type                                                 = 'nwpFileUpload';
-               options.lookup[sfPathProvider.stringify(options.path)] = f;
-               return f;
-            }
+                 var f = schemaFormProvider.stdFormObj(name, schema, options);
+                 f.key = options.path;
+                 f.type = 'nwpFileUpload';
+                 options.lookup[sfPathProvider.stringify(options.path)] = f;
+                 return f;
+             }
          };
 
          schemaFormProvider.defaults.array.unshift(nwpMultifileUpload);
@@ -76,16 +83,27 @@ angular
       'ngMessages',
       'SSATB.LocalForage'
    ])
-   .directive('ngSchemaFile', ['Upload', '$timeout', '$q', '$localForage', function (Upload, $timeout, $q, $localForage) {
+   .directive('ngSchemaFile', ['Upload', '$timeout', '$q', '$localForage','ssatbHttp', function (Upload, $timeout, $q, $localForage,ssatbHttp) {
       return {
          restrict: 'A',
          scope:    true,
          require:  'ngModel',
          link:     function (scope, element, attrs, ngModel) {
              scope.storageDomain = scope.form && scope.form.storageDomain;
+             scope.metaData = scope.form && scope.form.metaData;
+             scope.uploadedFiles = [];
              scope.apiInfo = getApiConfigFromApiInfo($localForage._localforage._config.apiInfo);
             scope.isSinglefileUpload = scope.form && scope.form.schema && scope.form.schema.format === 'singlefile';
-
+            scope.uploadOnFileSelect = scope.form && scope.form.uploadOnFileSelect;
+            scope.fileUploading = false;
+            ngModel.$render = function () {
+                if (ngModel.$modelValue != null) {
+                    angular.forEach(ngModel.$modelValue, function (f, key) {
+                        addFileToFileInfo(f)
+                    });
+                }
+            }
+            
             scope.selectFile  = function (file) {
                scope.picFile = file;
             };
@@ -102,6 +120,11 @@ angular
                   doUpload(file);
                });
             };
+            scope.deleteFile = function (file) {
+                var apiInfo = scope.apiInfo;
+                var url = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/files/" + file.fileId;
+                ssatbHttp.delete(url).then(function () { var index = scope.uploadedFiles.indexOf(file); scope.uploadedFiles.splice(index, 1); })
+            }
             function getApiConfigFromApiInfo(apiInfoObject) {
                 for (var apiInfo in apiInfoObject) {
                     var serviceName = apiInfoObject[apiInfo].ServiceName;
@@ -110,34 +133,88 @@ angular
                 }
                 return null;
             }
-
+            function getFileInfo(fileId) {
+                var apiInfo = scope.apiInfo;
+                var url = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/files/" + fileId;
+                return ssatbHttp.get(url).then(function (response) { return response; });
+            }
+            function addFileToFileInfo(fileId)
+            {
+                return getFileInfo(fileId).then(function (f) {
+                    f.name = f.properties.contentDisposition;
+                    if (f.name.indexOf("filename=") == 0)
+                        f.name = f.name.substring(9);
+                    scope.uploadedFiles.push(f);
+                });
+            }
             function doUpload(file) {
+                scope.selectFile(file);
                 var apiInfo = scope.apiInfo;
                 if (file && !file.$error && apiInfo && scope.storageDomain) {
                     var url = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/files";
-                  file.upload = Upload.upload({
-                      url: url,
-                      file: file,
-                      headers: apiInfo.Headers
-                  });
-                
-                  file.upload.then(function (response) {
-                     $timeout(function () {
+                    var data = { file: file };
+                    if (scope.metaData != null)
+                        for (var key in scope.metaData)
+                            data['x-file-metadata-' + key] = scope.metaData[key];
+                    var uploadConfig =
+                        {
+                            url: url,
+                            data: data,
+                            headers: apiInfo.Headers
+                        };
+                    if (file.size > scope.form.schema.chunkedFileSize) {
+                        //Initiate the file Upload
+                        var chunkUrl = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/chunked/files"
+                        ssatbHttp.post(chunkUrl, {
+                            "Content-Type": file.type,
+                            "Content-Disposition": 'filename="' + file.name + '"'
+                        }).then(function (response) {
+                            var fileId = response.response;
+                            uploadConfig.resumeSizeUrl = chunkUrl + "/" + fileId;
+                            uploadConfig.url = chunkUrl + "/" + fileId;
+                            uploadConfig.resumeChunkSize = scope.form.schema.chunkedFileSize,
+                            uploadConfig.resumeSizeResponseReader = function (data) {
+                                return data.properties.contentLength;
+                            };
+                            kickOffFileUpload(file, uploadConfig, fileId);
+                            file.upload.progress(function (evt) {
+                                file.progress = Math.min(100, parseInt(100.0 *
+                                   evt.loaded / evt.total));
+                            });
+                        });
+                    }
+                    else {
+                        kickOffFileUpload(file, uploadConfig);
+                        file.upload.progress(function (evt) {
+                            file.progress = Math.min(100, parseInt(100.0 *
+                               evt.loaded / evt.total));
+                        });
+                    }
+                }
+            }
+            function kickOffFileUpload(file, uploadConfig, fileId) {
+                file.upload = Upload.upload(uploadConfig);
+                scope.fileUploading = true;
+                file.upload.then(function (response) {
+                    $timeout(function () {
                         file.result = response.data;
-                     });
-                     ngModel.$setViewValue(response.data);
-                     ngModel.$commitViewValue();
-                  }, function (response) {
-                     if (response.status > 0) {
+                    });
+                    var newValue = ngModel.$modelValue;
+                    if (!angular.isDefined(newValue))
+                        newValue = [];
+                    if (angular.isUndefined(fileId))
+                        fileId = response.data;
+                    newValue.push(fileId);
+                    ngModel.$setViewValue(newValue);
+                    ngModel.$commitViewValue();
+                    addFileToFileInfo(fileId).then(function () {
+                        scope.fileUploading = false;
+                    })
+                }, function (response) {
+                    if (response.status > 0) {
                         scope.errorMsg = response.status + ': ' + response.data;
-                     }
-                  });
-
-                  file.upload.progress(function (evt) {
-                     file.progress = Math.min(100, parseInt(100.0 *
-                        evt.loaded / evt.total));
-                  });
-               }
+                    }
+                });
             }
 
             scope.validateField = function () {

@@ -21,19 +21,27 @@ var myApp = angular.module('formApp', [
     "type": "object",
     "title": "Album",
     "properties": {
+        "dummy": {
+            "type": "string"
+        },
+        "iseeTestDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Test Date"
+        },
       "image": {
-        "title": "Image",
+        "title": "Pdf/Images",
         "type": "array",
         "format": "singlefile",
         "x-schema-form": {
           "type": "array"
         },
         "pattern": {
-          "mimeType": "image/*",
+            "mimeType": "image/*,application/pdf",
           "validationMessage": "Wrong File Type: "
         },
         "maxSize": {
-          "maximum": "2MB",
+          "maximum": "20MB",
           "validationMessage": "Allowed file size exceeded: ",
           "validationMessage2": "Current File size: "
         },
@@ -74,20 +82,55 @@ var myApp = angular.module('formApp', [
   };
 
   $scope.form = [
-  {
-    "key": "image",
-    "type": "nwpFileUpload",
-    "storageDomain": "profileattachments"
-
-  }, {
-    "key": "images",
-    "type": "nwpFileUpload",
-    "storageDomain": "profileattachments"
-  }];
+      {
+          "type": "section",
+          "htmlClass": "row",
+          "items": [
+            {
+                "type": "section",
+                "htmlClass": "col-xs-4",
+                "items": [
+                  {
+                      "type": "help",
+                      "helpvalue": "<p><span style=\"font-size: 14pt;\"><strong>ISEE</strong></span></p>"
+                  }
+                ]
+            },
+            {
+                "type": "section",
+                "htmlClass": "col-xs-4",
+                "items": [
+                  {
+                      "key": "iseeTestDate",
+                      "description": "Add Test Date",
+                      "title": "Test Date"
+                  }
+                ]
+            },
+            {
+                "type": "section",
+                "htmlClass": "col-xs-4",
+                "items": [
+                     {
+                         "key": "image",
+                         //                         "notitle" : true,
+                         "uploadOnFileSelect": true,
+                         "type": "nwpFileUpload",
+                         "storageDomain": "profileattachments",
+                         "templateUrlFileUpload": "partials/simpleFileUpload.html",
+                         "metaData":
+                             {
+                                 "testType": "ISEE"
+                             }
+                     }
+                ]
+            }
+          ]
+      }
+ ];
   
-  $scope.model = {};
-
-   $scope.submit = function () {
+  $scope.model = { "image": ["59b39f25-8f13-47f2-95dc-3d7cad1c3195"] };
+  $scope.submit = function () {
       $scope.$broadcast('schemaFormValidate');
       if ($scope.myForm.$valid) {
          console.log('form valid');
