@@ -6,7 +6,6 @@
   "devDependencies": {
     "add-stream": "^1.0.0",
     "gulp": "^3.9.0",
-    "gulp-angular-templatecache": "^1.8.0",
     "gulp-concat": "^2.6.0",
     "gulp-connect": "^3.2.2",
     "gulp-header": "^1.7.1",
