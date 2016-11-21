@@ -4,8 +4,8 @@ IF "%ERRORLEVEL%" NEQ "0" goto error
 call bower install --production
 IF "%ERRORLEVEL%" NEQ "0" goto error
 
-call gulp
-IF "%ERRORLEVEL%" NEQ "0" goto error
+--call gulp
+--IF "%ERRORLEVEL%" NEQ "0" goto error
 
 robocopy /Mir %DEPLOYMENT_SOURCE% %DEPLOYMENT_TARGET%
 IF %ERRORLEVEL% GEQ 8 goto error
