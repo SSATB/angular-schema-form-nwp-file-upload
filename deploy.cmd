@@ -1,4 +1,4 @@
-call npm install  
+call npm install --dedupe  
 IF "%ERRORLEVEL%" NEQ "0" goto error
 
 call bower install
