@@ -9,7 +9,7 @@ angular
              defaultMaxSizeMsg2 = 'Current file size:',
              defaultMinItemsMsg = 'You have to upload at least one file',
              defaultMaxItemsMsg = 'You can\'t upload more than one file.',
-            defaultChunkedFileSize = 10000;
+            defaultChunkedFileSize = 2000000; //2MB
 
             var nwpSinglefileUpload = function (name, schema, options) {
                 if (schema.type === 'array' && schema.format === 'singlefile') {
@@ -123,7 +123,17 @@ angular
             scope.deleteFile = function (file) {
                 var apiInfo = scope.apiInfo;
                 var url = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/files/" + file.fileId;
-                ssatbHttp.delete(url).then(function () { var index = scope.uploadedFiles.indexOf(file); scope.uploadedFiles.splice(index, 1); })
+                ssatbHttp.delete(url).then(function () {
+                    var index = scope.uploadedFiles.indexOf(file);
+                    scope.uploadedFiles.splice(index, 1);
+                    var newValue = ngModel.$modelValue;
+                    var mIndex = newValue.indexOf(file.fileId);
+                    if (mIndex != -1) {
+                        newValue.splice(mIndex, 1);
+                        ngModel.$setViewValue(newValue);
+                        ngModel.$commitViewValue();
+                    }
+                })
             }
             function getApiConfigFromApiInfo(apiInfoObject) {
                 for (var apiInfo in apiInfoObject) {
@@ -141,9 +151,7 @@ angular
             function addFileToFileInfo(fileId)
             {
                 return getFileInfo(fileId).then(function (f) {
-                    f.name = f.properties.contentDisposition;
-                    if (f.name.indexOf("filename=") == 0)
-                        f.name = f.name.substring(9);
+                    f.name = f.properties.fileName;
                     scope.uploadedFiles.push(f);
                 });
             }
@@ -199,9 +207,9 @@ angular
                     $timeout(function () {
                         file.result = response.data;
                     });
+                    if (angular.isUndefined(ngModel.$modelValue) || ngModel.$modelValue == null)
+                        ngModel.$modelValue = [];
                     var newValue = ngModel.$modelValue;
-                    if (!angular.isDefined(newValue))
-                        newValue = [];
                     if (angular.isUndefined(fileId))
                         fileId = response.data;
                     newValue.push(fileId);
