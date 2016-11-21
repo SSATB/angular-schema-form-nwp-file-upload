@@ -1,12 +1,11 @@
 var gulp = require('gulp');
 
 var addStream = require('add-stream');
-var angularTemplatecache = require('gulp-angular-templatecache');
 var concat = require('gulp-concat');
-var connect = require('gulp-connect');
-var header = require('gulp-header');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
+var ngHtml2Js = require("gulp-ng-html2js"),
+    minifyHtml = require('gulp-minify-html');
 
 var bower = require('./bower.json');
 var banner = ['/**',
@@ -20,10 +19,11 @@ var banner = ['/**',
 function prepareTemplates() {
     return gulp.src('./src/*.html')
         //.pipe(minify and preprocess the template html here)
-        .pipe(angularTemplatecache({
-            module: 'schemaForm',
-            root: 'directives/decorators/bootstrap/nwp-file/'
-        }));
+                .pipe(minifyHtml({ empty: true, spare: true, quotes: true }))
+        .pipe(ngHtml2Js({
+            moduleName: "schemaForm",
+            prefix: 'directives/decorators/bootstrap/nwp-file/'
+        }))
 }
 
 gulp.task('build-app-dev', function() {
@@ -36,7 +36,7 @@ gulp.task('build-app-dev', function() {
         .pipe(concat('schema-form-file.js'))
 
         .pipe(sourcemaps.write())
-        .pipe(header(banner, { bower : bower } ))
+//        .pipe(header(banner, { bower : bower } ))
         .pipe(gulp.dest('./dist'));
 });
 
@@ -50,7 +50,7 @@ gulp.task('build-app-prod', function() {
         .pipe(concat('schema-form-file.min.js'))
 
         .pipe(uglify())
-        .pipe(header(banner, { bower : bower } ))
+//        .pipe(header(banner, { bower : bower } ))
         .pipe(gulp.dest('./dist'));
 });
 
