@@ -1,8 +1,8 @@
-call npm install --dedupe  
-IF "%ERRORLEVEL%" NEQ "0" goto error
+--call npm install --dedupe  
+--IF "%ERRORLEVEL%" NEQ "0" goto error
 
-call bower install --production
-IF "%ERRORLEVEL%" NEQ "0" goto error
+--call bower install --production
+--IF "%ERRORLEVEL%" NEQ "0" goto error
 
 --call gulp
 --IF "%ERRORLEVEL%" NEQ "0" goto error
