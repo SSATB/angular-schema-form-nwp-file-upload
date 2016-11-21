@@ -173,10 +173,15 @@ angular
                     if (file.size > scope.form.schema.chunkedFileSize) {
                         //Initiate the file Upload
                         var chunkUrl = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/chunked/files"
-                        ssatbHttp.post(chunkUrl, {
+                        var metData = {
                             "Content-Type": file.type,
                             "Content-Disposition": 'filename="' + file.name + '"'
-                        }).then(function (response) {
+                        };
+                        if (scope.metaData != null)
+                            for (var key in scope.metaData)
+                                metData[key] = scope.metaData[key];
+
+                        ssatbHttp.post(chunkUrl, metData).then(function (response) {
                             var fileId = response.response;
                             uploadConfig.resumeSizeUrl = chunkUrl + "/" + fileId;
                             uploadConfig.url = chunkUrl + "/" + fileId;
