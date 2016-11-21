@@ -21,15 +21,7 @@ var myApp = angular.module('formApp', [
     "type": "object",
     "title": "Album",
     "properties": {
-        "dummy": {
-            "type": "string"
-        },
-        "iseeTestDate": {
-            "type": "string",
-            "format": "date",
-            "title": "Test Date"
-        },
-      "image": {
+      "iseeAttachments": {
         "title": "Pdf/Images",
         "type": "array",
         "format": "singlefile",
@@ -52,33 +44,30 @@ var myApp = angular.module('formApp', [
           "validationMessage": "You must upload at least one file"
         }
       },
-      "images": {
-        "title": "Images",
-        "type": "array",
-        "format": "multifile",
-        "x-schema-form": {
-          "type": "array"
-        },
-        "pattern": {
-          "mimeType": "image/*,!.gif",
-          "validationMessage": "Wrong File Type: "
-        },
-        "maxSize": {
-          "maximum": "2MB",
-          "validationMessage": "Allowed file size exceeded: ",
-          "validationMessage2": "Current File size: "
-        },
-        "maxItems": {
-          "validationMessage": "More files have been uploaded than allowed."
-        },
-        "minItems": {
-          "validationMessage": "You must upload at least one file"
-        }
+      "psatAttachments": {
+          "title": "Pdf/Images",
+          "type": "array",
+          "format": "singlefile",
+          "x-schema-form": {
+              "type": "array"
+          },
+          "pattern": {
+              "mimeType": "image/*,application/pdf",
+              "validationMessage": "Wrong File Type: "
+          },
+          "maxSize": {
+              "maximum": "20MB",
+              "validationMessage": "Allowed file size exceeded: ",
+              "validationMessage2": "Current File size: "
+          },
+          "maxItems": {
+              "validationMessage": "More files have been uploaded than allowed."
+          },
+          "minItems": {
+              "validationMessage": "You must upload at least one file"
+          }
       }
-    },
-    "required": [
-      "images"
-    ]
+    }
   };
 
   $scope.form = [
@@ -100,19 +89,8 @@ var myApp = angular.module('formApp', [
                 "type": "section",
                 "htmlClass": "col-xs-4",
                 "items": [
-                  {
-                      "key": "iseeTestDate",
-                      "description": "Add Test Date",
-                      "title": "Test Date"
-                  }
-                ]
-            },
-            {
-                "type": "section",
-                "htmlClass": "col-xs-4",
-                "items": [
                      {
-                         "key": "image",
+                         "key": "iseeAttachments",
                          //                         "notitle" : true,
                          "uploadOnFileSelect": true,
                          "type": "nwpFileUpload",
@@ -125,11 +103,47 @@ var myApp = angular.module('formApp', [
                      }
                 ]
             }
+             
           ]
-      }
+      },
+       {
+           "type": "section",
+           "htmlClass": "row",
+           "items": [
+             {
+                 "type": "section",
+                 "htmlClass": "col-xs-4",
+                 "items": [
+                   {
+                       "type": "help",
+                       "helpvalue": "<p><span style=\"font-size: 14pt;\"><strong>PSAT</strong></span></p>"
+                   }
+                 ]
+             },
+             {
+                 "type": "section",
+                 "htmlClass": "col-xs-4",
+                 "items": [
+                      {
+                          "key": "psatAttachments",
+                          //                         "notitle" : true,
+                          "uploadOnFileSelect": true,
+                          "type": "nwpFileUpload",
+                          "storageDomain": "profileattachments",
+                          "templateUrlFileUpload": "partials/simpleFileUpload.html",
+                          "metaData":
+                              {
+                                  "testType": "PSAT"
+                              }
+                      }
+                 ]
+             }
+
+           ]
+       }
  ];
   
-  $scope.model = { "image": ["59b39f25-8f13-47f2-95dc-3d7cad1c3195"] };
+  $scope.model = { };
   $scope.submit = function () {
       $scope.$broadcast('schemaFormValidate');
       if ($scope.myForm.$valid) {

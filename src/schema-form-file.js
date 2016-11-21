@@ -208,7 +208,7 @@ angular
                         file.result = response.data;
                     });
                     if (angular.isUndefined(ngModel.$modelValue) || ngModel.$modelValue == null)
-                        ngModel.$modelValue = [];
+                        ngModel.$setViewValue([]);
                     var newValue = ngModel.$modelValue;
                     if (angular.isUndefined(fileId))
                         fileId = response.data;
