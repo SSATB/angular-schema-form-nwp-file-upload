@@ -61,6 +61,8 @@ var myApp = angular.module('formApp', [
               "validationMessage2": "Current File size: "
           },
           "maxItems": {
+              "maximum": 3,
+              "warningMessage": "Duh -- Only 3 Pssat Attachments can be uploaded.",
               "validationMessage": "More files have been uploaded than allowed."
           },
           "minItems": {

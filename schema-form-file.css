@@ -60,21 +60,48 @@
 }
 
 .attachment-button  a {
-    font-size: 40px;
+    height: 100%;
+    font-size: 35px;
     color: inherit; 
     align-content:center;
+    border: 1px solid;
+    border-color: transparent;
     padding-right: 2px;
     padding-left:2px;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    width:60px;
 }
 
 /* mouse over link */
 .attachment-button >  a:hover {
-    font-size: 40px;
+    font-size: 35px;
     color: inherit; 
     border: 1px solid #bbb;
     align-content:center;
     padding-right: 2px;
     padding-left:2px;
+    width:60px;
 
+}
+
+.attachment-button-disabled  a {
+    height: 100%;
+    font-size: 35px;
+    color: inherit; 
+    align-content:center;
+    border: 1px solid;
+    border-color: transparent;
+    padding-right: 2px;
+    padding-left:2px;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    pointer-events: none;
+    cursor: default;
+    width:60px;
+}
+.uploaded-files {
+    padding: 0 0 0 0 !important;
+    margin: 0 0 0 0 !important;
 }
 

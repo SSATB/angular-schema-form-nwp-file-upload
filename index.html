@@ -20,52 +20,6 @@
                   ng-submit="submit()"
                   no-validate></form>
             <pre>{{model|json}}</pre>
-            <script type='text/ng-template' id="partials/simpleFileUpload.html">
-                <div class="row mb">
-                    <div class="col-sm-2 mb-sm attachment-button">
-                        <a href ngf-select="uploadFile(picFile)" type="file" ngf-multiple="false" ng-model="picFile" name="file"
-                                ng-attr-ngf-pattern="{{form.schema.pattern && form.schema.pattern.mimeType ? form.schema.pattern.mimeType : undefined }}"
-                                ng-attr-ngf-max-size="{{form.schema.maxSize && form.schema.maxSize.maximum ? form.schema.maxSize.maximum : undefined }}"
-                                ng-required="form.required"
-                                accept="{{form.schema.pattern && form.schema.pattern.mimeType}}"
-                                ng-model-options="form.ngModelOptions" id="fileInputlink"
-                                class="ui icon">
-                            <span class="ion-paperclip"></span>
-                        </a>
-                    </div>
-                    <div ng-show="fileUploading" class="col-sm-4 mb-sm">
-                        <div class="filename" title="{{ picFile.name }}">{{ picFile.name }}</div>
-                    </div>
-                    <div ng-show="fileUploading" class="col-sm-4 mb-sm">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped" role="progressbar"
-                                 ng-class="{'progress-bar-success': picFile.progress == 100}"
-                                 ng-style="{width: picFile.progress + '%'}">
-                                {{ picFile.progress }} %
-                            </div>
-                        </div>
-                    </div>
-                    <div ng-messages="uploadForm.$error" ng-messages-multiple="">
-                        <div class="text-danger errorMsg" ng-message="maxSize">{{ form.schema[picFile.$error].validationMessage | translate }} <strong>{{picFile.$errorParam}}</strong>. ({{ form.schema[picFile.$error].validationMessage2 | translate }} <strong>{{picFile.size / 1000000|number:1}}MB</strong>)</div>
-                        <div class="text-danger errorMsg" ng-message="pattern">{{ form.schema[picFile.$error].validationMessage | translate }} <strong>{{picFile.$errorParam}}</strong></div>
-                        <div class="text-danger errorMsg" ng-message="maxItems">{{ form.schema[picFile.$error].validationMessage | translate }} <strong>{{picFile.$errorParam}}</strong></div>
-                        <div class="text-danger errorMsg" ng-message="minItems">{{ form.schema[picFile.$error].validationMessage | translate }} <strong>{{picFile.$errorParam}}</strong></div>
-                        <div class="text-danger errorMsg" ng-show="errorMsg">{{errorMsg}}</div>
-                    </div>
-                </div>
-                <div>
-                    <ul ng-show="uploadedFiles && uploadedFiles.length" class="list-group">
-                        <li class="list-group-item" style="border: none;padding:0 0 0 0" ng-repeat="uploadedFile in uploadedFiles">
-                            <p>
-                                <a href="{{ uploadedFile.downloadUrl }}" download>{{ uploadedFile.name }}</a> 
-                            <a href >
-                                <span ng-click="deleteFile(uploadedFile)" class="glyphicon glyphicon-remove"></span>
-                            </a>
-                            </p>
-                        </li>
-                    </ul>
-                </div>
-            </script>
         </div>
     </div>
     <!-- JS -->
