@@ -72,13 +72,13 @@ angular
           schemaFormDecoratorsProvider.addMapping(
              'bootstrapDecorator',
              'nwpFileUpload',
-             'decorators/bootstrap/nwp-file/nwp-file.html'
+             'directives/decorators/bootstrap/nwp-file/nwp-file.html'
           );
           var sfField = sfBuilderProvider.builders.sfField;
           var ngModel = sfBuilderProvider.builders.ngModel;
           var ngModelOptions = sfBuilderProvider.builders.ngModelOptions;
           var defaults = [sfField, ngModel];
-          schemaFormDecoratorsProvider.defineAddOn('bootstrapDecorator', 'nwpFileUpload', 'decorators/bootstrap/nwp-file/nwp-file.html', defaults);
+          schemaFormDecoratorsProvider.defineAddOn('bootstrapDecorator', 'nwpFileUpload', 'directives/decorators/bootstrap/nwp-file/nwp-file.html', defaults);
 
       }
    ]);
