@@ -58,10 +58,16 @@
 .mb {
   margin-bottom: 10px !important;
 }
+.attachment-button {
+    max-width:60px;
+/*    padding-right : 0px !important;
+    padding-top : 0px !important;
+*/   
+}
 
 .attachment-button  a {
     height: 100%;
-    font-size: 35px;
+    font-size: 30px;
     color: inherit; 
     align-content:center;
     border: 1px solid;
@@ -75,7 +81,7 @@
 
 /* mouse over link */
 .attachment-button >  a:hover {
-    font-size: 35px;
+    font-size: 30px;
     color: inherit; 
     border: 1px solid #bbb;
     align-content:center;
@@ -84,10 +90,13 @@
     width:60px;
 
 }
+.attachment-button-disabled {
+    max-width:60px;
+}
 
 .attachment-button-disabled  a {
     height: 100%;
-    font-size: 35px;
+    font-size: 30px;
     color: inherit; 
     align-content:center;
     border: 1px solid;
