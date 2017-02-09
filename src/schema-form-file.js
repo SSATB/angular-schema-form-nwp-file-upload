@@ -111,6 +111,7 @@ angular
                }
 
                scope.selectFile = function (file) {
+                   scope.errorMsg = '';
                    scope.picFile = file;
                };
                scope.selectFiles = function (files) {
@@ -229,9 +230,13 @@ angular
                            scope.fileUploading = false;
                        })
                    }, function (response) {
-                       if (response.status > 0) {
-                           scope.errorMsg = response.status + ': ' + response.data;
+                       if (response.status > 0 && response.data) {
+                           scope.errorMsg = response.data;
                        }
+                       else { scope.errorMsg = "Errors uploading your file"; }
+                       file.upload.abort();
+                       scope.fileUploading = false;
+                       file.progress = 0;
                    });
                }
 

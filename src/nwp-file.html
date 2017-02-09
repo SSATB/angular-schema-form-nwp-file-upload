@@ -1,4 +1,4 @@
-<ng-form class="file-upload mb-lg" ng-schema-file ng-model="$$value$$" sf-field-model sf-changed="form" name="uploadForm_{{form.key.slice(-1)[0]}}">
+<ng-form class="file-upload mb-lg" ng-schema-file ng-model="$$value$$" sf-field-model sf-changed="uploadForm" schema-validate="uploadForm" name="uploadForm">
     <label ng-show="form.title && form.notitle !== true" class="control-label" for="fileInputButton" ng-class="{'sr-only': !showTitle(), 'text-danger': uploadForm.$error.required && !uploadForm.$pristine}">
         {{ form.title }}<i ng-show="form.required">&nbsp;*</i>
     </label>
