@@ -105,6 +105,7 @@ angular
                scope.fileUploading = false;
                ngModel.$render = function () {
                    if (ngModel.$modelValue != null) {
+                       scope.uploadedFiles = [];
                        angular.forEach(ngModel.$modelValue, function (f, key) {
                            addFileToFileInfo(f)
                        });
