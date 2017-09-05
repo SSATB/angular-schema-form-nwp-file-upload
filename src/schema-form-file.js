@@ -131,8 +131,8 @@ angular
                };
                scope.deleteFile = function (file) {
                    var apiInfo = scope.apiInfo;
-                   var url = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/files/" + file.fileId;
-                   ssatbHttp.delete(url).then(function () {
+//                   var url = apiInfo.Url + "/api/v1/storageDomains/" + scope.storageDomain + "/files/" + file.fileId;
+//                   ssatbHttp.delete(url).then(function () {
                        var index = scope.uploadedFiles.indexOf(file);
                        scope.uploadedFiles.splice(index, 1);
                        var newValue = ngModel.$modelValue;
@@ -142,7 +142,7 @@ angular
                            ngModel.$setViewValue(newValue);
                            ngModel.$commitViewValue();
                        }
-                   })
+//                   })
                }
                function getApiConfigFromApiInfo(apiInfoObject) {
                    for (var apiInfo in apiInfoObject) {
