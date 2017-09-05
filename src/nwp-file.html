@@ -38,8 +38,8 @@
         <div class="col-sm-4 uploaded-files">
             <div class="{{form.htmlClassUploadedFiles}}" ng-repeat="uploadedFile in uploadedFiles">
                 <a href="{{ uploadedFile.downloadUrl }}" download>{{ uploadedFile.name }}</a>
-                <a href>
-                    <span ng-click="deleteFile(uploadedFile)" class="glyphicon glyphicon-remove"></span>
+                <a href ng-click="deleteFile(uploadedFile)">
+                    <span class="glyphicon glyphicon-remove"></span>
                 </a>
             </div>
         </div>
